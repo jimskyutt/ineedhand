@@ -1,20 +1,33 @@
 #!/bin/bash
 
-# Install PHP and Composer
-apt-get update && apt-get install -y php php-curl php-dom php-mbstring php-xml unzip
-curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Exit on error
+set -e
 
-# Install project dependencies
-composer install --no-dev --optimize-autoloader --no-interaction
+# Install Node.js (Render provides this)
+echo "Installing Node.js..."
 
-# Generate application key
-php artisan key:generate --force
+# Install dependencies
+echo "Installing PHP dependencies..."
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+
+# Install Composer dependencies
+echo "Installing Composer dependencies..."
+php composer.phar install --no-dev --optimize-autoloader --no-interaction
+
+# Generate application key if not exists
+if [ ! -f ".env" ]; then
+    cp .env.example .env
+    php artisan key:generate
+fi
 
 # Optimize the application
-php artisan optimize
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
-# Install Node.js and build assets
-curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-apt-get install -y nodejs
+# Install Node dependencies and build assets
+echo "Installing Node dependencies..."
 npm install
 npm run build
