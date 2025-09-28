@@ -1,8 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import fs from 'fs';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
     plugins: [
         laravel({
             input: [
@@ -13,23 +12,23 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    server: {
+    server: command === 'serve' ? {
         host: '0.0.0.0',
         port: 5173,
-        https: {
-            key: fs.readFileSync('path/to/your/localhost-key.pem'),
-            cert: fs.readFileSync('path/to/your/localhost.pem'),
-        },
         hmr: {
-            host: '10.38.184.68',
-            protocol: 'wss',
-            port: 5173
+            host: 'localhost',
+            protocol: 'ws',
         },
         cors: {
-            origin: ['https://10.38.184.68:8000', 'http://10.38.184.68:8000'],
+            origin: ['http://localhost:8000'],
             methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
             allowedHeaders: ['*'],
             credentials: true
-        }
+        },
+    } : undefined,
+    build: {
+        outDir: 'public/build',
+        emptyOutDir: true,
+        manifest: true,
     },
-});
+}));
