@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ineedhand
+    env: php
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: php artisan serve --host=0.0.0.0 --port=10000
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        fromGroup:
+          name: env
+          key: RENDER_EXTERNAL_URL
+    plan: free

@@ -1,21 +1,42 @@
+# Dependencies
 /node_modules
+/vendor
+
+# Environment files
+/.env
+/.env.*.local
+/.env.*.example
+!.env.example
+
+# Build files
 /public/build
 /public/hot
 /public/storage
+!/public/.gitkeep
+
+# Storage
 /storage/*.key
-/vendor
-.env
-.env.backup
-.env.production
-.phpunit.result.cache
+/storage/*.log
+/storage/framework/*
+/storage/logs/*
+!/storage/framework/.gitkeep
+!/storage/logs/.gitkeep
+
+# Local development
 Homestead.json
 Homestead.yaml
-auth.json
-npm-debug.log
-yarn-error.log
+.phpunit.result.cache
+.phpunit.cache/
+
+# IDE
 /.fleet
 /.idea
 /.vscode
+*.sublime-*
+
+# Build files - we want to keep these
+!/build.sh
+!/render.yaml
 
 # Laravel 4 specific
 bootstrap/compiled.php
